@@ -65,15 +65,6 @@
     <ClCompile Include="CourseManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="FileHelper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility.h">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Exception.h">
       <Filter>头文件</Filter>
     </ClCompile>

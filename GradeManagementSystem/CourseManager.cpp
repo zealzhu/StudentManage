@@ -3,10 +3,10 @@
 //////////////////////////////////////
 #include "Manager.h"
 
-void zhu::CCourseManager::Print(std::list<zhu::CCourse>* list)
+void zhu::CCourseManager::Print(std::vector<zhu::CCourse>* vector)
 {	
-	std::list<zhu::CCourse>::iterator it;
-	for (it = list->begin(); it != list->end(); it++)
+	std::vector<zhu::CCourse>::iterator it;
+	for (it = vector->begin(); it != vector->end(); it++)
 	{
 		CCourse objCourse = *it;
 		std::cout << std::left << std::setw(10)
@@ -17,23 +17,18 @@ void zhu::CCourseManager::Print(std::list<zhu::CCourse>* list)
 			<< std::endl;
 	}
 }
-bool zhu::CCourseManager::OnDelete(std::list<zhu::CCourse>& lstCourse, std::list<zhu::CCourse>::iterator& itFind)
+bool zhu::CCourseManager::OnDelete(std::vector<zhu::CCourse>& vecCourse, std::vector<zhu::CCourse>::iterator& itFind)
 {
-	lstCourse.erase(itFind);																	//移除		
-	CFileHelper::Save<CCourse>(COURSE_FILE_NAME, lstCourse);									//保存
+	vecCourse.erase(itFind);																	//移除		
+	CFileHelper::Save<CCourse>(COURSE_FILE_NAME, vecCourse);									//保存
 	return false;
 }
-bool zhu::CCourseManager::OnUpdate(std::list<zhu::CCourse>& lstCourse, std::list<zhu::CCourse>::iterator& itFind)
+bool zhu::CCourseManager::OnUpdate(std::vector<zhu::CCourse>& vecCourse, std::vector<zhu::CCourse>::iterator& itFind)
 {
-	int nCourseNo;
 	std::string strCourseName;
 	int nCourseType;
 	std::string strDescription;
 
-	std::cout << "输入新课程号:";
-	std::cin >> nCourseNo;
-	if (IManager::Search<CCourse>(nCourseNo, COURSE_FILE_NAME, CCourse::compareCourseNo, NULL))
-		throw KeyUniqueException("课程号");
 	std::cout << "输入新课程名:";
 	std::cin >> strCourseName;
 	std::cout << "输入新课程类型（1.选修 2.必修）:";
@@ -48,12 +43,11 @@ bool zhu::CCourseManager::OnUpdate(std::list<zhu::CCourse>& lstCourse, std::list
 		throw InputException();
 	}
 
-	itFind->m_nCourseNo = nCourseNo;
 	itFind->m_emCourseType = CourseType(nCourseType);
 	strcpy(itFind->m_szCourseName, strCourseName.c_str());
 	strcpy(itFind->m_szDescription, strDescription.c_str());
 
-	CFileHelper::Save<CCourse>(COURSE_FILE_NAME, lstCourse);									//保存
+	CFileHelper::Save<CCourse>(COURSE_FILE_NAME, vecCourse);									//保存
 
 	return false;
 }
@@ -111,7 +105,7 @@ void zhu::CCourseManager::Search()
 		<< std::setw(10) << "课程描述"
 		<< std::endl;
 
-	std::list<CCourse>* list = CFileHelper::ReadAll<CCourse>(COURSE_FILE_NAME);
-	Print(list);
-	delete list;
+	std::vector<CCourse>* vector = CFileHelper::ReadAll<CCourse>(COURSE_FILE_NAME);
+	Print(vector);
+	delete vector;
 }

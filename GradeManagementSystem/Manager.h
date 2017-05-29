@@ -20,7 +20,7 @@ namespace zhu
 	template<class T>
 	struct OnSearch
 	{
-		typedef bool(*SEARCH_SUCCESS)(std::list<T>&, typename std::list<T>::iterator&);			//查询回调函数
+		typedef bool(*SEARCH_SUCCESS)(std::vector<T>&, typename std::vector<T>::iterator&);			//查询回调函数
 		typedef bool(*COMPARE_BY_NO)(int, T&);													//int比较函数
 		typedef bool(*COMPARE_BY_CHAR)(const char*, T&);										//字符比较函数
 	};
@@ -74,18 +74,18 @@ namespace zhu
 		bool bFind = false;
 
 		//读取信息
-		std::list<T>* list = CFileHelper::ReadAll<T>(strFileName);
+		std::vector<T>* vector = CFileHelper::ReadAll<T>(strFileName);
 
 		//遍历
-		std::list<T>::iterator it;
-		for (it = list->begin(); it != list->end(); it++)
+		std::vector<T>::iterator it;
+		for (it = vector->begin(); it != vector->end(); it++)
 		{
 			if (compare(nNo, *it))
 			{
 				bFind = true;
 				if (callback != NULL) {
 					//	有回调执行回调
-					if (!callback(*list, it))
+					if (!callback(*vector, it))
 						break;
 				}
 				else
@@ -94,7 +94,7 @@ namespace zhu
 				}			
 			}
 		}
-		delete list;
+		delete vector;
 
 		return bFind;
 	}
@@ -107,18 +107,18 @@ namespace zhu
 		bool bFind = false;
 
 		//读取信息
-		std::list<T>* list = CFileHelper::ReadAll<T>(strFileName);
+		std::vector<T>* vector = CFileHelper::ReadAll<T>(strFileName);
 
 		//遍历
-		std::list<T>::iterator it;
-		for (it = list->begin(); it != list->end(); it++)
+		std::vector<T>::iterator it;
+		for (it = vector->begin(); it != vector->end(); it++)
 		{
 			if (compare(szName, *it))
 			{
 				bFind = true;
 				if (callback != NULL) {
 					//	有回调执行回调
-					if (!callback(*list, it))
+					if (!callback(*vector, it))
 						break;
 				}
 				else
@@ -127,7 +127,7 @@ namespace zhu
 				}
 			}
 		}
-		delete list;
+		delete vector;
 
 		return bFind;
 	}
@@ -138,7 +138,7 @@ namespace zhu
 	{
 	public:
 		static void Print(CStudent& objStudent);													//打印单条记录
-		static void Print(std::list<zhu::CStudent>* list);											//打印集合
+		static void Print(std::vector<zhu::CStudent>* vector);											//打印集合
 
 	public:
 		void Add();																					//添加
@@ -154,10 +154,10 @@ namespace zhu
 		void SearchByClass();																		//通过班级查找
 
 	private:
-		static bool OnDelete(std::list<zhu::CStudent>&, std::list<zhu::CStudent>::iterator&);		//删除回调
-		static bool OnUpdate(std::list<zhu::CStudent>&, std::list<zhu::CStudent>::iterator&);		//更新回调
-		static bool OnSearchByNo(std::list<zhu::CStudent>&, std::list<zhu::CStudent>::iterator&);	//通过学号查找回调
-		static bool OnSearchByChar(std::list<zhu::CStudent>&, std::list<zhu::CStudent>::iterator&); //通过char查找回调
+		static bool OnDelete(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);		//删除回调
+		static bool OnUpdate(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);		//更新回调
+		static bool OnSearchByNo(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);	//通过学号查找回调
+		static bool OnSearchByChar(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&); //通过char查找回调
 	};
 
 	/*
@@ -166,7 +166,7 @@ namespace zhu
 	class CClassManager : public IManager
 	{
 	public:
-		static void Print(std::list<zhu::CClass>* list);					//打印
+		static void Print(std::vector<zhu::CClass>* vector);					//打印
 
 	public:
 		void Add();															//添加
@@ -175,8 +175,8 @@ namespace zhu
 		void Search();														//查找
 
 	private:
-		static bool OnDelete(std::list<zhu::CClass>&, std::list<zhu::CClass>::iterator&);
-		static bool OnUpdate(std::list<zhu::CClass>&, std::list<zhu::CClass>::iterator&);
+		static bool OnDelete(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);
+		static bool OnUpdate(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);
 	};
 
 	/*
@@ -185,7 +185,7 @@ namespace zhu
 	class CGradeManager : public IManager
 	{
 	public:
-		static void Print(std::list<zhu::CGrade>* list);									//打印
+		static void Print(std::vector<zhu::CGrade>* vector);									//打印
 
 	public:
 		void Add();																			//添加
@@ -194,8 +194,8 @@ namespace zhu
 		void Search();																		//查找
 
 	private:
-		static bool OnDelete(std::list<zhu::CGrade>&, std::list<zhu::CGrade>::iterator&);
-		static bool OnUpdate(std::list<zhu::CGrade>&, std::list<zhu::CGrade>::iterator&);
+		static bool OnDelete(std::vector<zhu::CGrade>&, std::vector<zhu::CGrade>::iterator&);
+		static bool OnUpdate(std::vector<zhu::CGrade>&, std::vector<zhu::CGrade>::iterator&);
 	};
 
 	/*
@@ -204,7 +204,7 @@ namespace zhu
 	class CCourseManager : public IManager
 	{
 	public:
-		static void Print(std::list<zhu::CCourse>* list);									//打印
+		static void Print(std::vector<zhu::CCourse>* vector);									//打印
 
 	public:
 		void Add();																			//添加
@@ -213,8 +213,8 @@ namespace zhu
 		void Search();																		//查找
 
 	private:
-		static bool OnDelete(std::list<zhu::CCourse>&, std::list<zhu::CCourse>::iterator&);
-		static bool OnUpdate(std::list<zhu::CCourse>&, std::list<zhu::CCourse>::iterator&);
+		static bool OnDelete(std::vector<zhu::CCourse>&, std::vector<zhu::CCourse>::iterator&);
+		static bool OnUpdate(std::vector<zhu::CCourse>&, std::vector<zhu::CCourse>::iterator&);
 	};
 
 	/*
@@ -223,7 +223,7 @@ namespace zhu
 	class CTestSubjectManager : public IManager
 	{
 	public:
-		static void Print(std::list<zhu::CTestSubject>* list);		//打印
+		static void Print(std::vector<zhu::CTestSubject>* vector);		//打印
 
 	public:
 		void Add();			//添加
@@ -232,8 +232,8 @@ namespace zhu
 		void Search();		//查找
 
 	private:
-		static bool OnDelete(std::list<zhu::CTestSubject>&, std::list<zhu::CTestSubject>::iterator&);
-		static bool OnUpdate(std::list<zhu::CTestSubject>&, std::list<zhu::CTestSubject>::iterator&);
+		static bool OnDelete(std::vector<zhu::CTestSubject>&, std::vector<zhu::CTestSubject>::iterator&);
+		static bool OnUpdate(std::vector<zhu::CTestSubject>&, std::vector<zhu::CTestSubject>::iterator&);
 	};
 
 	/*
@@ -244,48 +244,43 @@ namespace zhu
 		typedef bool(*COMPARE_BY_INT_AND_CHAR)(int, const char*, CScore&);
 		typedef bool(*COMPARE_BY_CHAR_AND_CHAR)(const char*, const char*, CScore&);
 	public:
-		static void Print(std::list<zhu::CScore>*);											//打印
+		static void Print(std::vector<zhu::CScore>*);									//打印
 	public:
-		void Add();																			//添加
-		void Del();																			//删除
-		void Update();																		//修改
-		void Search();																		//查找
+		void Add();																	//添加
+		void Del();																	//删除
+		void Update();																//修改
+		void Search();																//查找
 
 	public:
-		void Statistics();																	//统计信息
+		void Statistics();															//统计信息
 
 	private:
-		void UpdateMenu();
-		void UpdateByNoAndCourseName();														//通过学号和课程名删除
-		void UpdateByNameAndCourseName();													//通过姓名和课程名删除
+		void UpdateByNoAndCourseName();												//通过学号和课程名删除
+		void UpdateByNameAndCourseName();											//通过姓名和课程名删除
 
-		void DeleteMenu();																	//删除菜单
-		void DeleteByNoAndCourseName();														//通过学号和课程名删除
-		void DeleteByNameAndCourseName();													//通过姓名和课程名删除
+		void DeleteByNoAndCourseName();												//通过学号和课程名删除
+		void DeleteByNameAndCourseName();											//通过姓名和课程名删除
 
-		void SearchAll();																	//查找所有
-		void SearchMenu();																	//查找菜单
-		void SearchByNoAndCourseName();														//通过学号和课程名查找
-		void SearchByNameAndCourseName();													//通过姓名和课程名查找
+		void SearchAll();															//查找所有
+		void SearchByNoAndCourseName();												//通过学号和课程名查找
+		void SearchByNameAndCourseName();											//通过姓名和课程名查找
 
-		bool Search(int nNo, const char* szClassName,
+		bool Search(int nNo, const char* szClassName,								//通过学号和课程名查找并执行回调
 			typename COMPARE_BY_INT_AND_CHAR compare,
 			typename OnSearch<CScore>::SEARCH_SUCCESS callback);
-		bool Search(const char* szStudentName, const char* szClassName,
+		bool Search(const char* szStudentName, const char* szClassName,				//通过姓名和课程名查找并执行回调
 			typename COMPARE_BY_CHAR_AND_CHAR compare,
 			typename OnSearch<CScore>::SEARCH_SUCCESS callback);
 
 	private:
-		static bool OnDelete(std::list<zhu::CScore>&, 
-			std::list<zhu::CScore>::iterator&);												//通过学号删除回调
-
-		static bool OnUpdate(std::list<zhu::CScore>&, 
-			std::list<zhu::CScore>::iterator&);												//通过学号更新回调
-
-		static bool OnSearchByNoAndCourseName(std::list<zhu::CScore>&, 
-			std::list<zhu::CScore>::iterator&);												//通过学号查找回调
-		static bool OnSearchByNameAndCourseName(std::list<zhu::CScore>&, 
-			std::list<zhu::CScore>::iterator&);												//通过char查找回调
+		static bool OnDelete(std::vector<zhu::CScore>&,
+			std::vector<zhu::CScore>::iterator&);									//通过学号删除回调
+		static bool OnUpdate(std::vector<zhu::CScore>&,
+			std::vector<zhu::CScore>::iterator&);									//通过学号更新回调
+		static bool OnSearchByNoAndCourseName(std::vector<zhu::CScore>&,
+			std::vector<zhu::CScore>::iterator&);									//通过学号查找回调
+		static bool OnSearchByNameAndCourseName(std::vector<zhu::CScore>&,
+			std::vector<zhu::CScore>::iterator&);									//通过char查找回调
 	};
 	
 }

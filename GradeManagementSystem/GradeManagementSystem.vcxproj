@@ -149,7 +149,6 @@
     <ClCompile Include="ClassManager.cpp" />
     <ClCompile Include="CourseManager.cpp" />
     <ClCompile Include="Exception.h" />
-    <ClCompile Include="FileHelper.cpp" />
     <ClCompile Include="GradeManager.cpp" />
     <ClCompile Include="Info.cpp" />
     <ClCompile Include="main.cpp" />
@@ -159,8 +158,6 @@
     <ClCompile Include="ScoreManager.cpp" />
     <ClCompile Include="StudentManager.cpp" />
     <ClCompile Include="TestSubjectManager.cpp" />
-    <ClCompile Include="Utility.cpp" />
-    <ClCompile Include="Utility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

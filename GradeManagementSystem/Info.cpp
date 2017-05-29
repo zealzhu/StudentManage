@@ -40,6 +40,11 @@ bool zhu::CClass::compareClassNo(int nNo, CClass & objClass)
 	return objClass.m_nClassNo == nNo;
 }
 
+bool zhu::CClass::compareClassName(const char* szClassName, CClass & objClass)
+{
+	return strcmp(objClass.m_szClassName, szClassName) == 0;
+}
+
 zhu::CClass::CClass()
 {
 }
@@ -50,8 +55,8 @@ zhu::CClass::CClass(int nClassNo, const char * szClassName)
 	strcpy(m_szClassName, szClassName);
 }
 
-zhu::CClass::CClass(int nClassNo, const char * szClassName, std::list<int> lstStudentNo)
-	: m_nClassNo(nClassNo), m_lstStudentNo(lstStudentNo)
+zhu::CClass::CClass(int nClassNo, const char * szClassName, std::vector<int> vecStudentNo)
+	: m_nClassNo(nClassNo), m_vecStudentNo(vecStudentNo)
 {
 	strcpy(m_szClassName, szClassName);
 }
@@ -72,8 +77,8 @@ zhu::CGrade::CGrade(int nGradeNo, const char * szGradeName)
 	strcpy(m_szGradeName, szGradeName);
 }
 
-zhu::CGrade::CGrade(int nGradeNo, const char * szGradeName, std::list<int> lstClassNo)
-	: m_nGradeNo(nGradeNo), m_lstClassNo(lstClassNo)
+zhu::CGrade::CGrade(int nGradeNo, const char * szGradeName, std::vector<int> vecClassNo)
+	: m_nGradeNo(nGradeNo), m_vecClassNo(vecClassNo)
 {
 	strcpy(m_szGradeName, szGradeName);
 }
@@ -83,6 +88,11 @@ zhu::CGrade::CGrade(int nGradeNo, const char * szGradeName, std::list<int> lstCl
 bool zhu::CCourse::compareCourseNo(int nNo, zhu::CCourse & objCourse)
 {
 	return objCourse.m_nCourseNo == nNo;
+}
+
+bool zhu::CCourse::compareCourseName(const char * szCourseName, CCourse & objCourse)
+{
+	return strcmp(objCourse.m_szCourseName, szCourseName) == 0;
 }
 
 zhu::CCourse::CCourse()
@@ -101,6 +111,11 @@ zhu::CCourse::CCourse(int nCourseNo, const char * szCourseName, const char * szD
 bool zhu::CTestSubject::compareTestSubjectNo(int nNo, CTestSubject & objTestSubject)
 {
 	return objTestSubject.m_nTestSubjectNo == nNo;
+}
+
+bool zhu::CTestSubject::compareTestSubjectName(const char * szName, CTestSubject & objTestSubject)
+{
+	return strcmp(objTestSubject.m_szTestSubjectName, szName) == 0;
 }
 
 zhu::CTestSubject::CTestSubject()

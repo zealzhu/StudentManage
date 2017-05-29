@@ -2,10 +2,10 @@
 // 考试科目管理方法
 //////////////////////////////////////
 #include "Manager.h"
-void zhu::CTestSubjectManager::Print(std::list<zhu::CTestSubject>* list)
+void zhu::CTestSubjectManager::Print(std::vector<zhu::CTestSubject>* vector)
 {
-	std::list<zhu::CTestSubject>::iterator it;
-	for (it = list->begin(); it != list->end(); it++)
+	std::vector<zhu::CTestSubject>::iterator it;
+	for (it = vector->begin(); it != vector->end(); it++)
 	{
 		std::cout << std::left << std::setw(10)
 			<< std::setw(10) << it->m_nTestSubjectNo
@@ -14,28 +14,25 @@ void zhu::CTestSubjectManager::Print(std::list<zhu::CTestSubject>* list)
 			<< std::endl;
 	}
 }
-bool zhu::CTestSubjectManager::OnDelete(std::list<zhu::CTestSubject>& lstTestSubject, 
-	std::list<zhu::CTestSubject>::iterator& itFind)
+bool zhu::CTestSubjectManager::OnDelete(std::vector<zhu::CTestSubject>& vecTestSubject, 
+	std::vector<zhu::CTestSubject>::iterator& itFind)
 {
-	lstTestSubject.erase(itFind);																	//移除		
-	CFileHelper::Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, lstTestSubject);						//保存
+	vecTestSubject.erase(itFind);																	//移除		
+	CFileHelper::Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, vecTestSubject);						//保存
 	return false;
 }
-bool zhu::CTestSubjectManager::OnUpdate(std::list<zhu::CTestSubject>& lstTestSubject,
-	std::list<zhu::CTestSubject>::iterator& itFind)
+bool zhu::CTestSubjectManager::OnUpdate(std::vector<zhu::CTestSubject>& vecTestSubject,
+	std::vector<zhu::CTestSubject>::iterator& itFind)
 {
-	int nTestSubjectNo;
 	std::string strTestSubjectName;
 	std::string strCourseName;
 
-	std::cout << "输入考试编号:";
-	std::cin >> nTestSubjectNo;
-	if (IManager::Search<CTestSubject>(nTestSubjectNo, TEST_SUBJECT_FILE_NAME, CTestSubject::compareTestSubjectNo, NULL))
-		throw KeyUniqueException("考试编号");
 	std::cout << "输入考试名称:";
 	std::cin >> strTestSubjectName;
 	std::cout << "输入考试科目:";
 	std::cin >> strCourseName;
+	if (!IManager::Search<CCourse>(strCourseName.c_str(), COURSE_FILE_NAME, CCourse::compareCourseName, NULL))
+		throw NotFoundException("课程");
 
 	if (std::cin.fail()) {
 		std::cin.clear(std::istream::goodbit);
@@ -44,15 +41,13 @@ bool zhu::CTestSubjectManager::OnUpdate(std::list<zhu::CTestSubject>& lstTestSub
 		throw InputException();
 	}
 
-	itFind->m_nTestSubjectNo = nTestSubjectNo;
 	strcpy(itFind->m_szTestSubjectName, strTestSubjectName.c_str());
 	strcpy(itFind->m_szCourseName, strCourseName.c_str());
 
-	CFileHelper::Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, lstTestSubject);						//保存
+	CFileHelper::Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, vecTestSubject);						//保存
 
 	return false;
 }
-
 
 void zhu::CTestSubjectManager::Add()
 {
@@ -66,8 +61,10 @@ void zhu::CTestSubjectManager::Add()
 		throw KeyUniqueException("考试编号");
 	std::cout << "输入考试名称:";
 	std::cin >> strTestSubjectName;
-	std::cout << "输入考试科目";
+	std::cout << "输入考试科目:";
 	std::cin >> strCourseName;
+	if (!IManager::Search<CCourse>(strCourseName.c_str(), COURSE_FILE_NAME, CCourse::compareCourseName, NULL))
+		throw NotFoundException("课程");
 
 	if (std::cin.fail()) {
 		std::cin.clear(std::istream::goodbit);
@@ -110,9 +107,9 @@ void zhu::CTestSubjectManager::Search()
 		<< std::setw(10) << "考试科目"
 		<< std::endl;
 
-	std::list<CTestSubject>* list = CFileHelper::ReadAll<CTestSubject>(TEST_SUBJECT_FILE_NAME);
-	Print(list);
-	delete list;
+	std::vector<CTestSubject>* vector = CFileHelper::ReadAll<CTestSubject>(TEST_SUBJECT_FILE_NAME);
+	Print(vector);
+	delete vector;
 }
 
 

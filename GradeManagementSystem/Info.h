@@ -9,7 +9,7 @@
 #define _ZHU_INFO_H
 
 #include <string>
-#include <list>
+#include <vector>
 
 namespace zhu
 {
@@ -69,14 +69,15 @@ namespace zhu
 		friend class CClassManager;
 	public:
 		static bool compareClassNo(int nNo, CClass& objClass);									//对比班级号
+		static bool compareClassName(const char*, CClass& objClass);							//对比班级名
 	public:
 		CClass();
 		CClass(int nClassNo, const char* szClassName);
-		CClass(int nClassNo, const char* szClassName, std::list<int> lstStudentNo);
+		CClass(int nClassNo, const char* szClassName, std::vector<int> vecStudentNo);
 	private:
 		int m_nClassNo;																			//班级号
 		char m_szClassName[15];																	//班级名
-		std::list<int> m_lstStudentNo;															//学号集合
+		std::vector<int> m_vecStudentNo;															//学号集合
 	};
 
 	/*
@@ -91,12 +92,12 @@ namespace zhu
 	public:
 		CGrade();
 		CGrade(int nGradeNo, const char* szGradeName);
-		CGrade(int nGradeNo, const char* szGradeName, std::list<int> lstClassNo);
+		CGrade(int nGradeNo, const char* szGradeName, std::vector<int> vecClassNo);
 
 	private:
 		int m_nGradeNo;																			//班级号
 		char m_szGradeName[15];																	//年段名
-		std::list<int> m_lstClassNo;															//班级号集合
+		std::vector<int> m_vecClassNo;															//班级号集合
 	};
 
 	/*
@@ -116,7 +117,8 @@ namespace zhu
 		friend class CFileHelper;
 		friend class CCourseManager;
 	public:
-		static bool compareCourseNo(int nNo, CCourse& objGrade);									//对比课程号
+		static bool compareCourseNo(int nNo, CCourse& objCourse);									//对比课程号
+		static bool compareCourseName(const char* szCourseName, CCourse& objCourse);					//对比课程名
 	public:
 		CCourse();
 		CCourse(int nCourseNo, const char* szCourseName, 
@@ -138,6 +140,7 @@ namespace zhu
 		friend class CTestSubjectManager;
 	public:
 		static bool compareTestSubjectNo(int nNo, CTestSubject& objTestSubject);					//对比考试号
+		static bool compareTestSubjectName(const char* szName, CTestSubject& objTestSubject);		//对比考试名
 
 	public:
 		CTestSubject();

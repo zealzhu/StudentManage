@@ -19,7 +19,7 @@ void zhu::CStudentManager::Print(CStudent& objStudent)
 		<< std::setw(10) << objStudent.m_szPhone
 		<< std::endl;
 }
-void zhu::CStudentManager::Print(std::list<zhu::CStudent>* list)
+void zhu::CStudentManager::Print(std::vector<zhu::CStudent>* vector)
 {
 	std::cout << std::left
 		<< std::setw(5) << "学号"
@@ -34,8 +34,8 @@ void zhu::CStudentManager::Print(std::list<zhu::CStudent>* list)
 		<< std::setw(10) << "联系电话"
 		<< std::endl;
 
-	std::list<zhu::CStudent>::iterator it;
-	for (it = list->begin(); it != list->end(); it++)
+	std::vector<zhu::CStudent>::iterator it;
+	for (it = vector->begin(); it != vector->end(); it++)
 	{
 		std::cout << std::left
 			<< std::setw(5) << it->m_nStudentNo
@@ -53,15 +53,14 @@ void zhu::CStudentManager::Print(std::list<zhu::CStudent>* list)
 }
 
 //	回调方法
-bool zhu::CStudentManager::OnDelete(std::list<CStudent>& lstStudent,  std::list<CStudent>::iterator& itFind)
+bool zhu::CStudentManager::OnDelete(std::vector<CStudent>& vecStudent,  std::vector<CStudent>::iterator& itFind)
 {
-	lstStudent.erase(itFind);
-	zhu::CFileHelper::Save(STUDENT_FILE_NAME, lstStudent);
+	vecStudent.erase(itFind);
+	zhu::CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);
 	return false;
 }
-bool zhu::CStudentManager::OnUpdate(std::list<CStudent>& lstStudent, std::list<CStudent>::iterator& itFind)
+bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
 {
-	int nStudentNo;
 	std::string strSex;
 	std::string strClassName;
 	std::string strStuentName;
@@ -72,16 +71,14 @@ bool zhu::CStudentManager::OnUpdate(std::list<CStudent>& lstStudent, std::list<C
 	std::string strAddress;
 	std::string strPhone;
 
-	std::cout << "输入新学号:";
-	std::cin >> nStudentNo;
-	if (IManager::Search<CStudent>(nStudentNo, STUDENT_FILE_NAME, CStudent::compareStudentNo, NULL))
-		throw KeyUniqueException("学号");
 	std::cout << "输入新姓名:";
 	std::cin >> strStuentName;
 	std::cout << "输入新性别:";
 	std::cin >> strSex;
 	std::cout << "输入新班级:";
 	std::cin >> strClassName;
+	if (!IManager::Search<CClass>(strClassName.c_str(), CLASS_FILE_NAME, CClass::compareClassName, NULL))
+		throw NotFoundException("班级");
 	std::cout << "输入新名族:";
 	std::cin >> strNation;
 	std::cout << "输入新籍贯:";
@@ -103,7 +100,6 @@ bool zhu::CStudentManager::OnUpdate(std::list<CStudent>& lstStudent, std::list<C
 		throw InputException();
 	}
 
-	itFind->m_nStudentNo = nStudentNo;
 	strcpy(itFind->m_szStuentName, strStuentName.c_str());
 	itFind->m_emSex = (strSex == "男") ? Sex::MAN : Sex::WOMAN;
 	strcpy(itFind->m_szClassName, strClassName.c_str());
@@ -114,16 +110,16 @@ bool zhu::CStudentManager::OnUpdate(std::list<CStudent>& lstStudent, std::list<C
 	strcpy(itFind->m_szAddress, strAddress.c_str());
 	strcpy(itFind->m_szPhone, strPhone.c_str());
 
-	CFileHelper::Save(STUDENT_FILE_NAME, lstStudent);				//保存到文件中
+	CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);				//保存到文件中
 	
 	return false;
 }
-bool zhu::CStudentManager::OnSearchByNo(std::list<CStudent>& lstStudent, std::list<CStudent>::iterator& itFind)
+bool zhu::CStudentManager::OnSearchByNo(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
 {
 	zhu::CStudentManager::Print(*itFind);
 	return false;
 }
-bool zhu::CStudentManager::OnSearchByChar(std::list<CStudent>& lstStudent, std::list<CStudent>::iterator& itFind)
+bool zhu::CStudentManager::OnSearchByChar(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
 {
 	zhu::CStudentManager::Print(*itFind);
 	//姓名和班级可能相同继续查找
@@ -154,6 +150,8 @@ void zhu::CStudentManager::Add()
 	std::cin >> strSex;
 	std::cout << "输入班级:";
 	std::cin >> strClassName;
+	if (!IManager::Search<CClass>(strClassName.c_str(), CLASS_FILE_NAME, CClass::compareClassName, NULL))
+		throw NotFoundException("班级");
 	std::cout << "输入名族:";
 	std::cin >> strNation;
 	std::cout << "输入籍贯:";
@@ -271,9 +269,9 @@ void zhu::CStudentManager::SearchByClass()
 }
 void zhu::CStudentManager::SearchAll()
 {
-	std::list<CStudent>* list = CFileHelper::ReadAll<CStudent>(STUDENT_FILE_NAME);
-	Print(list);
-	delete list;
+	std::vector<CStudent>* vector = CFileHelper::ReadAll<CStudent>(STUDENT_FILE_NAME);
+	Print(vector);
+	delete vector;
 }
 
 

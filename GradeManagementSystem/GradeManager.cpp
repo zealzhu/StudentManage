@@ -3,10 +3,10 @@
 //////////////////////////////////////
 #include "Manager.h"
 
-void zhu::CGradeManager::Print(std::list<zhu::CGrade>* list)
+void zhu::CGradeManager::Print(std::vector<zhu::CGrade>* vector)
 {	
-	std::list<zhu::CGrade>::iterator it;
-	for (it = list->begin(); it != list->end(); it++)
+	std::vector<zhu::CGrade>::iterator it;
+	for (it = vector->begin(); it != vector->end(); it++)
 	{
 		std::cout << std::left
 			<< std::setw(10) << it->m_nGradeNo
@@ -15,21 +15,16 @@ void zhu::CGradeManager::Print(std::list<zhu::CGrade>* list)
 	}
 }
 
-bool zhu::CGradeManager::OnDelete(std::list<zhu::CGrade>& lstGrade, std::list<zhu::CGrade>::iterator& itFind)
+bool zhu::CGradeManager::OnDelete(std::vector<zhu::CGrade>& vecGrade, std::vector<zhu::CGrade>::iterator& itFind)
 {
-	lstGrade.erase(itFind);												//移除		
-	CFileHelper::SaveGrade(lstGrade);									//保存
+	vecGrade.erase(itFind);												//移除		
+	CFileHelper::SaveHasVector<CGrade>(GRADE_FILE_NAME, vecGrade);									//保存
 	return false;
 }
-bool zhu::CGradeManager::OnUpdate(std::list<zhu::CGrade>& lstGrade, std::list<zhu::CGrade>::iterator& itFind)
+bool zhu::CGradeManager::OnUpdate(std::vector<zhu::CGrade>& vecGrade, std::vector<zhu::CGrade>::iterator& itFind)
 {
-	int nGradeNo;
 	std::string strGradeName;
 
-	std::cout << "输入新年段号:";
-	std::cin >> nGradeNo;
-	if (IManager::Search<CGrade>(nGradeNo, GRADE_FILE_NAME, CGrade::compareGradeNo, NULL))
-		throw KeyUniqueException("年段号");
 	std::cout << "输入新年段名:";
 	std::cin >> strGradeName;
 
@@ -40,9 +35,8 @@ bool zhu::CGradeManager::OnUpdate(std::list<zhu::CGrade>& lstGrade, std::list<zh
 		throw InputException();
 	}
 
-	itFind->m_nGradeNo = nGradeNo;
 	strcpy(itFind->m_szGradeName, strGradeName.c_str());
-	CFileHelper::SaveGrade(lstGrade);
+	CFileHelper::SaveHasVector<CGrade>(GRADE_FILE_NAME, vecGrade);
 
 	return false;
 }
@@ -67,7 +61,7 @@ void zhu::CGradeManager::Add()
 	}
 
 	CGrade objGrade(nGradeNo, strGradeName.c_str());
-	CFileHelper::AppendGrade(objGrade);
+	CFileHelper::AppendHasVector<CGrade>(GRADE_FILE_NAME, objGrade);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CGradeManager::Del()
@@ -99,8 +93,8 @@ void zhu::CGradeManager::Search()
 		<< std::setw(10) << "年段名"
 		<< std::endl;
 
-	std::list<CGrade>* list = CFileHelper::ReadGradeAll();
-	Print(list);
-	delete list;
+	std::vector<CGrade>* vector = CFileHelper::ReadHasVectorAll<CGrade>(GRADE_FILE_NAME);
+	Print(vector);
+	delete vector;
 }
 

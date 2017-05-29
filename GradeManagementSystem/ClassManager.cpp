@@ -24,7 +24,7 @@ void zhu::CClassManager::Print(std::vector<zhu::CClass>* vector)
 bool zhu::CClassManager::OnDelete(std::vector<zhu::CClass>& vecClass, std::vector<zhu::CClass>::iterator& itFind)
 {
 	vecClass.erase(itFind);															//移除		
-	CFileHelper::SaveHasVector<CClass>(CLASS_FILE_NAME, vecClass);					//保存
+	CFileHelper<CClass>::SaveHasVector(CLASS_FILE_NAME, vecClass);					//保存
 	return false;
 }
 bool zhu::CClassManager::OnUpdate(std::vector<zhu::CClass>& vecClass, std::vector<zhu::CClass>::iterator& itFind)
@@ -42,7 +42,7 @@ bool zhu::CClassManager::OnUpdate(std::vector<zhu::CClass>& vecClass, std::vecto
 	}
 
 	strcpy(itFind->m_szClassName, strClassName.c_str());
-	CFileHelper::SaveHasVector<CClass>(CLASS_FILE_NAME, vecClass);					//保存
+	CFileHelper<CClass>::SaveHasVector(CLASS_FILE_NAME, vecClass);					//保存
 
 	return false;
 }
@@ -68,7 +68,7 @@ void zhu::CClassManager::Add()
 	}
 
 	CClass objClass(nClassNo, strClassName.c_str());
-	CFileHelper::AppendHasVector<CClass>(CLASS_FILE_NAME, objClass);
+	CFileHelper<CClass>::AppendHasVector(CLASS_FILE_NAME, objClass);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CClassManager::Del()
@@ -95,7 +95,7 @@ void zhu::CClassManager::Update()
 }
 void zhu::CClassManager::Search()
 {
-	std::vector<CClass>* vector = CFileHelper::ReadHasVectorAll<CClass>(CLASS_FILE_NAME);
+	std::vector<CClass>* vector = CFileHelper<CClass>::ReadHasVectorAll(CLASS_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

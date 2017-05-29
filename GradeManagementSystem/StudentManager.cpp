@@ -53,10 +53,10 @@ void zhu::CStudentManager::Print(std::vector<zhu::CStudent>* vector)
 }
 
 //	回调方法
-bool zhu::CStudentManager::OnDelete(std::vector<CStudent>& vecStudent,  std::vector<CStudent>::iterator& itFind)
+bool zhu::CStudentManager::OnDelete(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
 {
 	vecStudent.erase(itFind);
-	zhu::CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);
+	zhu::CFileHelper<CStudent>::Save(STUDENT_FILE_NAME, vecStudent);
 	return false;
 }
 bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
@@ -110,7 +110,7 @@ bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vect
 	strcpy(itFind->m_szAddress, strAddress.c_str());
 	strcpy(itFind->m_szPhone, strPhone.c_str());
 
-	CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);				//保存到文件中
+	CFileHelper<CStudent>::Save(STUDENT_FILE_NAME, vecStudent);				//保存到文件中
 	
 	return false;
 }
@@ -176,7 +176,7 @@ void zhu::CStudentManager::Add()
 	CStudent objStudent(nStudentNo, (strSex == "男" ? Sex::MAN : Sex::WOMAN), strClassName.c_str(), strStuentName.c_str(),
 		strNation.c_str(), strNativePlace.c_str(), strEntranceDate.c_str(), strBornDate.c_str(), strAddress.c_str(), strPhone.c_str());	
 	//添加
-	CFileHelper::Append<CStudent>(STUDENT_FILE_NAME, objStudent);
+	CFileHelper<CStudent>::Append(STUDENT_FILE_NAME, objStudent);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CStudentManager::Del()
@@ -269,7 +269,7 @@ void zhu::CStudentManager::SearchByClass()
 }
 void zhu::CStudentManager::SearchAll()
 {
-	std::vector<CStudent>* vector = CFileHelper::ReadAll<CStudent>(STUDENT_FILE_NAME);
+	std::vector<CStudent>* vector = CFileHelper<CStudent>::ReadAll(STUDENT_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

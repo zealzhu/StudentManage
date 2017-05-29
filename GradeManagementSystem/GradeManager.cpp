@@ -18,7 +18,7 @@ void zhu::CGradeManager::Print(std::vector<zhu::CGrade>* vector)
 bool zhu::CGradeManager::OnDelete(std::vector<zhu::CGrade>& vecGrade, std::vector<zhu::CGrade>::iterator& itFind)
 {
 	vecGrade.erase(itFind);												//移除		
-	CFileHelper::SaveHasVector<CGrade>(GRADE_FILE_NAME, vecGrade);									//保存
+	CFileHelper<CGrade>::SaveHasVector(GRADE_FILE_NAME, vecGrade);									//保存
 	return false;
 }
 bool zhu::CGradeManager::OnUpdate(std::vector<zhu::CGrade>& vecGrade, std::vector<zhu::CGrade>::iterator& itFind)
@@ -36,7 +36,7 @@ bool zhu::CGradeManager::OnUpdate(std::vector<zhu::CGrade>& vecGrade, std::vecto
 	}
 
 	strcpy(itFind->m_szGradeName, strGradeName.c_str());
-	CFileHelper::SaveHasVector<CGrade>(GRADE_FILE_NAME, vecGrade);
+	CFileHelper<CGrade>::SaveHasVector(GRADE_FILE_NAME, vecGrade);
 
 	return false;
 }
@@ -61,7 +61,7 @@ void zhu::CGradeManager::Add()
 	}
 
 	CGrade objGrade(nGradeNo, strGradeName.c_str());
-	CFileHelper::AppendHasVector<CGrade>(GRADE_FILE_NAME, objGrade);
+	CFileHelper<CGrade>::AppendHasVector(GRADE_FILE_NAME, objGrade);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CGradeManager::Del()
@@ -93,7 +93,7 @@ void zhu::CGradeManager::Search()
 		<< std::setw(10) << "年段名"
 		<< std::endl;
 
-	std::vector<CGrade>* vector = CFileHelper::ReadHasVectorAll<CGrade>(GRADE_FILE_NAME);
+	std::vector<CGrade>* vector = CFileHelper<CGrade>::ReadHasVectorAll(GRADE_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

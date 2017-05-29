@@ -30,10 +30,19 @@ bool zhu::CTestSubjectManager::OnUpdate(std::list<zhu::CTestSubject>& lstTestSub
 
 	std::cout << " ‰»Îøº ‘±‡∫≈:";
 	std::cin >> nTestSubjectNo;
+	if (IManager::Search<CTestSubject>(nTestSubjectNo, TEST_SUBJECT_FILE_NAME, CTestSubject::compareTestSubjectNo, NULL))
+		throw KeyUniqueException("øº ‘±‡∫≈");
 	std::cout << " ‰»Îøº ‘√˚≥∆:";
 	std::cin >> strTestSubjectName;
 	std::cout << " ‰»Îøº ‘ø∆ƒø:";
 	std::cin >> strCourseName;
+
+	if (std::cin.fail()) {
+		std::cin.clear(std::istream::goodbit);
+		std::cin.ignore(1024, '\n');
+		system("cls");
+		throw InputException();
+	}
 
 	itFind->m_nTestSubjectNo = nTestSubjectNo;
 	strcpy(itFind->m_szTestSubjectName, strTestSubjectName.c_str());
@@ -53,16 +62,23 @@ void zhu::CTestSubjectManager::Add()
 
 	std::cout << " ‰»Îøº ‘±‡∫≈:";
 	std::cin >> nTestSubjectNo;
+	if (IManager::Search<CTestSubject>(nTestSubjectNo, TEST_SUBJECT_FILE_NAME, CTestSubject::compareTestSubjectNo, NULL))
+		throw KeyUniqueException("øº ‘±‡∫≈");
 	std::cout << " ‰»Îøº ‘√˚≥∆:";
 	std::cin >> strTestSubjectName;
 	std::cout << " ‰»Îøº ‘ø∆ƒø";
 	std::cin >> strCourseName;
 
+	if (std::cin.fail()) {
+		std::cin.clear(std::istream::goodbit);
+		std::cin.ignore(1024, '\n');
+		system("cls");
+		throw InputException();
+	}
+
 	CTestSubject objTestSubject(nTestSubjectNo, strTestSubjectName.c_str(), strCourseName.c_str());
-	if (CFileHelper::Append<CTestSubject>(TEST_SUBJECT_FILE_NAME, objTestSubject))
-		std::cout << "ÃÌº”≥…π¶" << std::endl;
-	else
-		std::cout << "ÃÌº” ß∞‹" << std::endl;
+	CFileHelper::Append<CTestSubject>(TEST_SUBJECT_FILE_NAME, objTestSubject);
+	std::cout << "ÃÌº”≥…π¶" << std::endl;
 }
 void zhu::CTestSubjectManager::Del()
 {

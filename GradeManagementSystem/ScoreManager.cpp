@@ -167,10 +167,8 @@ void zhu::CScoreManager::Add()
 	
 	CScore objScore(nTestSubjectNo, nStudentNo, strStuentName.c_str(),
 		strCourseName.c_str(), strClassName.c_str(), fScore);
-	if (CFileHelper::Append<CScore>(SCORE_FILE_NAME, objScore))
-		std::cout << "添加成功" << std::endl;
-	else
-		std::cout << "添加失败" << std::endl;
+	CFileHelper::Append<CScore>(SCORE_FILE_NAME, objScore);
+	std::cout << "添加成功" << std::endl;
 }
 void zhu::CScoreManager::Del()
 {

@@ -27,29 +27,28 @@ namespace zhu
 	{
 	public:
 		template<class T>
-		static bool Save(std::string strFileName, std::list<T>& lst);					//保存信息
+		static void Save(std::string strFileName, std::list<T>& lst);					//保存信息
 		template<class T>
-		static bool Append(std::string strFileName, const T& obj);						//追加信息
+		static void Append(std::string strFileName, const T& obj);						//追加信息
 		template<class T>
 		static std::list<T>* ReadAll(std::string strFileName);							//读取所有信息
 
-		static bool SaveClass(std::list<CClass>& lst);
-		static bool AppendClass(CClass& obj);
+		static void SaveClass(std::list<CClass>& lst);
+		static void AppendClass(CClass& obj);
 		static std::list<CClass>* ReadClassAll();
 
-		static bool SaveGrade(std::list<CGrade>& lst);
-		static bool AppendGrade(CGrade& obj);
+		static void SaveGrade(std::list<CGrade>& lst);
+		static void AppendGrade(CGrade& obj);
 		static std::list<CGrade>* ReadGradeAll();
 	};
 	//模板实现
 	template<class T>
-	inline bool CFileHelper::Save(std::string strFileName, std::list<T>& lst)
+	inline void CFileHelper::Save(std::string strFileName, std::list<T>& lst)
 	{
 		//打开文件
 		std::ofstream file(strFileName, std::ios::out | std::ios::binary);
-		if (!file) {
-			return false;
-		}
+		if (!file)
+			throw std::exception("文件打开失败");
 
 		//写数据
 		for (std::list<T>::iterator it = lst.begin(); it != lst.end(); it++)
@@ -60,25 +59,21 @@ namespace zhu
 
 		//关闭
 		file.close();
-		return true;
 	}
 
 	template<class T>
-	inline bool CFileHelper::Append(std::string strFileName, const T & obj)
+	inline void CFileHelper::Append(std::string strFileName, const T & obj)
 	{
 		//打开文件
 		std::fstream file(strFileName, std::ios::app | std::ios::binary);
 		if (!file)
-		{
-			return false;
-		}
+			throw std::exception("文件打开失败");
 
 		//写数据
 		file.write((char *)&obj, sizeof(T));
 
 		//关闭
 		file.close();
-		return true;
 	}
 
 	template<class T>
@@ -94,9 +89,7 @@ namespace zhu
 		//打开文件
 		std::ifstream file(strFileName, std::ios::in | std::ios::binary);
 		if (!file)
-		{
-			return list;
-		}
+			throw std::exception("文件打开失败");
 
 		//读数据
 		T item;

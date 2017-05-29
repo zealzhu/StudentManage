@@ -74,6 +74,8 @@ bool zhu::CStudentManager::OnUpdate(std::list<CStudent>& lstStudent, std::list<C
 
 	std::cout << "输入新学号:";
 	std::cin >> nStudentNo;
+	if (IManager::Search<CStudent>(nStudentNo, STUDENT_FILE_NAME, CStudent::compareStudentNo, NULL))
+		throw KeyUniqueException("学号");
 	std::cout << "输入新姓名:";
 	std::cin >> strStuentName;
 	std::cout << "输入新性别:";
@@ -93,11 +95,12 @@ bool zhu::CStudentManager::OnUpdate(std::list<CStudent>& lstStudent, std::list<C
 	std::cout << "输入新手机:";
 	std::cin >> strPhone;
 
+	//检测输入是否有错误
 	if (std::cin.fail()) {
 		std::cin.clear(std::istream::goodbit);
 		std::cin.ignore(1024, '\n');
 		system("cls");
-		throw std::exception("输入有误");
+		throw InputException();
 	}
 
 	itFind->m_nStudentNo = nStudentNo;
@@ -143,6 +146,8 @@ void zhu::CStudentManager::Add()
 
 	std::cout << "输入学号:";
 	std::cin >> nStudentNo;
+	if (IManager::Search<CStudent>(nStudentNo, STUDENT_FILE_NAME, CStudent::compareStudentNo, NULL))
+		throw KeyUniqueException("学号");
 	std::cout << "输入姓名:";
 	std::cin >> strStuentName;
 	std::cout << "输入性别:";
@@ -166,16 +171,15 @@ void zhu::CStudentManager::Add()
 		std::cin.clear(std::istream::goodbit);
 		std::cin.ignore(1024, '\n');
 		system("cls");
-		throw std::exception("输入有误");
+		throw InputException();
 	}
 
+	//创建对象
 	CStudent objStudent(nStudentNo, (strSex == "男" ? Sex::MAN : Sex::WOMAN), strClassName.c_str(), strStuentName.c_str(),
-		strNation.c_str(), strNativePlace.c_str(), strEntranceDate.c_str(), strBornDate.c_str(), strAddress.c_str(), strPhone.c_str());
-	
-	if (CFileHelper::Append<CStudent>(STUDENT_FILE_NAME, objStudent))
-		std::cout << "添加成功" << std::endl;
-	else
-		std::cout << "添加失败" << std::endl;
+		strNation.c_str(), strNativePlace.c_str(), strEntranceDate.c_str(), strBornDate.c_str(), strAddress.c_str(), strPhone.c_str());	
+	//添加
+	CFileHelper::Append<CStudent>(STUDENT_FILE_NAME, objStudent);
+	std::cout << "添加成功" << std::endl;
 }
 void zhu::CStudentManager::Del()
 {

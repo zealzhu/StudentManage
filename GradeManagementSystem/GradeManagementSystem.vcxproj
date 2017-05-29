@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="ClassManager.cpp" />
     <ClCompile Include="CourseManager.cpp" />
+    <ClCompile Include="Exception.h" />
     <ClCompile Include="FileHelper.cpp" />
     <ClCompile Include="GradeManager.cpp" />
     <ClCompile Include="Info.cpp" />

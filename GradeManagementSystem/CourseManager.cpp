@@ -32,12 +32,21 @@ bool zhu::CCourseManager::OnUpdate(std::list<zhu::CCourse>& lstCourse, std::list
 
 	std::cout << "输入新课程号:";
 	std::cin >> nCourseNo;
+	if (IManager::Search<CCourse>(nCourseNo, COURSE_FILE_NAME, CCourse::compareCourseNo, NULL))
+		throw KeyUniqueException("课程号");
 	std::cout << "输入新课程名:";
 	std::cin >> strCourseName;
 	std::cout << "输入新课程类型（1.选修 2.必修）:";
 	std::cin >> nCourseType;
 	std::cout << "输入新课程描述:";
 	std::cin >> strDescription;
+
+	if (std::cin.fail()) {
+		std::cin.clear(std::istream::goodbit);
+		std::cin.ignore(1024, '\n');
+		system("cls");
+		throw InputException();
+	}
 
 	itFind->m_nCourseNo = nCourseNo;
 	itFind->m_emCourseType = CourseType(nCourseType);
@@ -58,6 +67,8 @@ void zhu::CCourseManager::Add()
 
 	std::cout << "输入课程号:";
 	std::cin >> nCourseNo;
+	if (IManager::Search<CCourse>(nCourseNo, COURSE_FILE_NAME, CCourse::compareCourseNo, NULL))
+		throw KeyUniqueException("课程号");
 	std::cout << "输入课程名:";
 	std::cin >> strCourseName;
 	std::cout << "输入课程类型（1.选修 2.必修）:";
@@ -66,10 +77,8 @@ void zhu::CCourseManager::Add()
 	std::cin >> strDescription;
 
 	CCourse objCourse(nCourseNo, strCourseName.c_str(), strDescription.c_str(), CourseType(nCourseType));
-	if (CFileHelper::Append<CCourse>(COURSE_FILE_NAME, objCourse))
-		std::cout << "添加成功" << std::endl;
-	else
-		std::cout << "添加失败" << std::endl;
+	CFileHelper::Append<CCourse>(COURSE_FILE_NAME, objCourse);
+	std::cout << "添加成功" << std::endl;
 }
 void zhu::CCourseManager::Del()
 {

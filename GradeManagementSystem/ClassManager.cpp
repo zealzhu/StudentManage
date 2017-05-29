@@ -34,8 +34,17 @@ bool zhu::CClassManager::OnUpdate(std::list<zhu::CClass>& lstClass, std::list<zh
 
 	std::cout << "输入新班级号:";
 	std::cin >> nClassNo;
+	if (IManager::Search<CClass>(nClassNo, CLASS_FILE_NAME, CClass::compareClassNo, NULL))
+		throw KeyUniqueException("班级号");
 	std::cout << "输入新班级名:";
 	std::cin >> strClassName;
+
+	if (std::cin.fail()) {
+		std::cin.clear(std::istream::goodbit);
+		std::cin.ignore(1024, '\n');
+		system("cls");
+		throw InputException();
+	}
 
 	itFind->m_nClassNo = nClassNo;
 	strcpy(itFind->m_szClassName, strClassName.c_str());
@@ -52,14 +61,21 @@ void zhu::CClassManager::Add()
 
 	std::cout << "输入班级号:";
 	std::cin >> nClassNo;
+	if (IManager::Search<CClass>(nClassNo, CLASS_FILE_NAME, CClass::compareClassNo, NULL))
+		throw KeyUniqueException("班级号");
 	std::cout << "输入班级名:";
 	std::cin >> strClassName;
 
+	if (std::cin.fail()) {
+		std::cin.clear(std::istream::goodbit);
+		std::cin.ignore(1024, '\n');
+		system("cls");
+		throw InputException();
+	}
+
 	CClass objClass(nClassNo, strClassName.c_str());
-	if (CFileHelper::AppendClass(objClass))
-		std::cout << "添加成功" << std::endl;
-	else
-		std::cout << "添加失败" << std::endl;
+	CFileHelper::AppendClass(objClass);
+	std::cout << "添加成功" << std::endl;
 }
 void zhu::CClassManager::Del()
 {

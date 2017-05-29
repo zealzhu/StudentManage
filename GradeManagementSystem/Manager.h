@@ -9,6 +9,7 @@
 #define _ZHU_MANAGER_H
 
 #include "FileHelper.h"
+#include "Exception.h"
 #include "Info.h"
 
 namespace zhu
@@ -50,7 +51,7 @@ namespace zhu
 		 *	return: 返回是否查找到
 		 */
 		template<class T>
-		bool Search(int, std::string,
+		static bool Search(int, std::string,
 			typename OnSearch<T>::COMPARE_BY_NO, typename OnSearch<T>::SEARCH_SUCCESS);
 	
 		/*	通过字符串查找
@@ -61,7 +62,7 @@ namespace zhu
 		*	return: 返回是否查找到
 		*/
 		template<class T>
-		bool Search(const char*, std::string,
+		static bool Search(const char*, std::string,
 			typename OnSearch<T>::COMPARE_BY_CHAR, typename OnSearch<T>::SEARCH_SUCCESS);	//通过char*查找
 	};
 	template<class T>
@@ -82,8 +83,15 @@ namespace zhu
 			if (compare(nNo, *it))
 			{
 				bFind = true;
-				if (!callback(*list, it))
+				if (callback != NULL) {
+					//	有回调执行回调
+					if (!callback(*list, it))
+						break;
+				}
+				else
+				{
 					break;
+				}			
 			}
 		}
 		delete list;
@@ -108,8 +116,15 @@ namespace zhu
 			if (compare(szName, *it))
 			{
 				bFind = true;
-				if (!callback(*list, it))
+				if (callback != NULL) {
+					//	有回调执行回调
+					if (!callback(*list, it))
+						break;
+				}
+				else
+				{
 					break;
+				}
 			}
 		}
 		delete list;

@@ -1,15 +1,12 @@
 #include "FileHelper.h"
 
-
-
 // 保存
-bool zhu::CFileHelper::SaveClass(std::list<CClass>& lst)
+void zhu::CFileHelper::SaveClass(std::list<CClass>& lst)
 {
 	//打开文件
 	std::ofstream file(CLASS_FILE_NAME, std::ios::out | std::ios::binary);
-	if (!file) {
-		return false;
-	}
+	if (!file)
+		throw std::exception("文件打开失败");
 
 	//写数据
 	for (std::list<CClass>::iterator it = lst.begin(); it != lst.end(); it++)
@@ -30,15 +27,13 @@ bool zhu::CFileHelper::SaveClass(std::list<CClass>& lst)
 
 	//关闭
 	file.close();
-	return true;
 }
-bool zhu::CFileHelper::SaveGrade(std::list<CGrade>& lst)
+void zhu::CFileHelper::SaveGrade(std::list<CGrade>& lst)
 {
 	//打开文件
 	std::ofstream file(GRADE_FILE_NAME, std::ios::out | std::ios::binary);
-	if (!file) {
-		return false;
-	}
+	if (!file)
+		throw std::exception("文件打开失败");
 
 	//写数据
 	for (std::list<CGrade>::iterator it = lst.begin(); it != lst.end(); it++)
@@ -59,18 +54,15 @@ bool zhu::CFileHelper::SaveGrade(std::list<CGrade>& lst)
 
 	//关闭
 	file.close();
-	return true;
 }
 
 // 追加
-bool zhu::CFileHelper::AppendClass(CClass & obj)
+void zhu::CFileHelper::AppendClass(CClass & obj)
 {
 	//打开文件
 	std::fstream file(CLASS_FILE_NAME, std::ios::app | std::ios::binary);
 	if (!file)
-	{
-		return false;
-	}
+		throw std::exception("文件打开失败");
 
 	//写数据
 	file.write((char *)&(obj.m_nClassNo), sizeof(int));								//写出班级号
@@ -86,16 +78,13 @@ bool zhu::CFileHelper::AppendClass(CClass & obj)
 
 	//关闭
 	file.close();
-	return true;
 }
-bool zhu::CFileHelper::AppendGrade(CGrade & obj)
+void zhu::CFileHelper::AppendGrade(CGrade & obj)
 {
 	//打开文件
 	std::fstream file(GRADE_FILE_NAME, std::ios::app | std::ios::binary);
 	if (!file)
-	{
-		return false;
-	}
+		throw std::exception("文件打开失败");
 
 	//写数据
 	file.write((char *)&(obj.m_nGradeNo), sizeof(int));								//写出年段号
@@ -111,7 +100,6 @@ bool zhu::CFileHelper::AppendGrade(CGrade & obj)
 
 	//关闭
 	file.close();
-	return true;
 }
 
 // 读取

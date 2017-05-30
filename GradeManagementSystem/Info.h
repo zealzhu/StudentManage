@@ -67,9 +67,11 @@ namespace zhu
 	{
 		friend class CFileHelper;
 		friend class CClassManager;
+		friend class CStudentManager;
 	public:
 		static bool compareClassNo(int nNo, CClass& objClass);									//对比班级号
 		static bool compareClassName(const char*, CClass& objClass);							//对比班级名
+
 	public:
 		CClass();
 		CClass(int nClassNo, const char* szClassName);
@@ -77,7 +79,7 @@ namespace zhu
 	private:
 		int m_nClassNo;																			//班级号
 		char m_szClassName[15];																	//班级名
-		std::vector<int> m_vecStudentNo;															//学号集合
+		std::vector<int> m_vecStudentNo;														//学号集合
 	};
 
 	/*

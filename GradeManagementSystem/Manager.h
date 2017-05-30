@@ -20,7 +20,7 @@ namespace zhu
 	template<class T>
 	struct OnSearch
 	{
-		typedef bool(*SEARCH_SUCCESS)(std::vector<T>&, typename std::vector<T>::iterator&);			//查询回调函数
+		typedef bool(*SEARCH_SUCCESS)(std::vector<T>&, typename std::vector<T>::iterator&);		//查询回调函数
 		typedef bool(*COMPARE_BY_NO)(int, T&);													//int比较函数
 		typedef bool(*COMPARE_BY_CHAR)(const char*, T&);										//字符比较函数
 	};
@@ -138,7 +138,7 @@ namespace zhu
 	{
 	public:
 		static void Print(CStudent& objStudent);													//打印单条记录
-		static void Print(std::vector<zhu::CStudent>* vector);											//打印集合
+		static void Print(std::vector<zhu::CStudent>* vector);										//打印集合
 
 	public:
 		void Add();																					//添加
@@ -158,6 +158,8 @@ namespace zhu
 		static bool OnUpdate(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);		//更新回调
 		static bool OnSearchByNo(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);	//通过学号查找回调
 		static bool OnSearchByChar(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&); //通过char查找回调
+		static bool OnAddSearchClass(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);   //学号添加到class
+		static bool OnDelSearchClass(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);   //学号从class中删除
 	};
 
 	/*
@@ -166,13 +168,13 @@ namespace zhu
 	class CClassManager : public IManager
 	{
 	public:
-		static void Print(std::vector<zhu::CClass>* vector);					//打印
+		static void Print(std::vector<zhu::CClass>* vector);											//打印
 
 	public:
-		void Add();															//添加
-		void Del();															//删除
-		void Update();														//修改
-		void Search();														//查找
+		void Add();																						//添加
+		void Del();																						//删除
+		void Update();																					//修改
+		void Search();																					//查找
 
 	private:
 		static bool OnDelete(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);

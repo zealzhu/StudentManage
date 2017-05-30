@@ -20,7 +20,7 @@ void zhu::CCourseManager::Print(std::vector<zhu::CCourse>* vector)
 bool zhu::CCourseManager::OnDelete(std::vector<zhu::CCourse>& vecCourse, std::vector<zhu::CCourse>::iterator& itFind)
 {
 	vecCourse.erase(itFind);																	//移除		
-	CFileHelper<CCourse>::Save(COURSE_FILE_NAME, vecCourse);									//保存
+	CFileHelper::Save<CCourse>(COURSE_FILE_NAME, vecCourse);									//保存
 	return false;
 }
 bool zhu::CCourseManager::OnUpdate(std::vector<zhu::CCourse>& vecCourse, std::vector<zhu::CCourse>::iterator& itFind)
@@ -47,7 +47,7 @@ bool zhu::CCourseManager::OnUpdate(std::vector<zhu::CCourse>& vecCourse, std::ve
 	strcpy(itFind->m_szCourseName, strCourseName.c_str());
 	strcpy(itFind->m_szDescription, strDescription.c_str());
 
-	CFileHelper<CCourse>::Save(COURSE_FILE_NAME, vecCourse);									//保存
+	CFileHelper::Save<CCourse>(COURSE_FILE_NAME, vecCourse);									//保存
 
 	return false;
 }
@@ -71,7 +71,7 @@ void zhu::CCourseManager::Add()
 	std::cin >> strDescription;
 
 	CCourse objCourse(nCourseNo, strCourseName.c_str(), strDescription.c_str(), CourseType(nCourseType));
-	CFileHelper<CCourse>::Append(COURSE_FILE_NAME, objCourse);
+	CFileHelper::Append<CCourse>(COURSE_FILE_NAME, objCourse);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CCourseManager::Del()
@@ -105,7 +105,7 @@ void zhu::CCourseManager::Search()
 		<< std::setw(10) << "课程描述"
 		<< std::endl;
 
-	std::vector<CCourse>* vector = CFileHelper<CCourse>::ReadAll(COURSE_FILE_NAME);
+	std::vector<CCourse>* vector = CFileHelper::ReadAll<CCourse>(COURSE_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

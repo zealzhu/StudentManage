@@ -3,6 +3,9 @@
 //////////////////////////////////////
 #include "Manager.h"
 
+//	临时记录学号
+int nTempNo = 0;
+
 //  打印
 void zhu::CStudentManager::Print(CStudent& objStudent)
 {
@@ -53,10 +56,13 @@ void zhu::CStudentManager::Print(std::vector<zhu::CStudent>* vector)
 }
 
 //	回调方法
-bool zhu::CStudentManager::OnDelete(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
+bool zhu::CStudentManager::OnDelete(std::vector<CStudent>& vecStudent,  std::vector<CStudent>::iterator& itFind)
 {
+	//删除对应班级中的号数
+	IManager::Search<CClass>(itFind->m_szClassName, CLASS_FILE_NAME, CClass::compareClassName, OnDelSearchClass);
+	//删除学生
 	vecStudent.erase(itFind);
-	zhu::CFileHelper<CStudent>::Save(STUDENT_FILE_NAME, vecStudent);
+	zhu::CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);	
 	return false;
 }
 bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vector<CStudent>::iterator& itFind)
@@ -77,8 +83,22 @@ bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vect
 	std::cin >> strSex;
 	std::cout << "输入新班级:";
 	std::cin >> strClassName;
-	if (!IManager::Search<CClass>(strClassName.c_str(), CLASS_FILE_NAME, CClass::compareClassName, NULL))
-		throw NotFoundException("班级");
+	if ((strcmp(itFind->m_szClassName, strClassName.c_str())) != 0)			//判断是否新的班级
+	{
+		if (!IManager::Search<CClass>(strClassName.c_str(),					//是新班级查找该班级并添加学号信息
+			CLASS_FILE_NAME, CClass::compareClassName, OnAddSearchClass))
+		{
+			//没有找到该班级
+			throw NotFoundException("班级");
+		}
+		else 
+		{
+			//并且删除旧班级中的记录
+			IManager::Search<CClass>(itFind->m_szClassName, CLASS_FILE_NAME, 
+				CClass::compareClassName, OnDelSearchClass);
+		}		
+	}
+		
 	std::cout << "输入新名族:";
 	std::cin >> strNation;
 	std::cout << "输入新籍贯:";
@@ -110,7 +130,7 @@ bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vect
 	strcpy(itFind->m_szAddress, strAddress.c_str());
 	strcpy(itFind->m_szPhone, strPhone.c_str());
 
-	CFileHelper<CStudent>::Save(STUDENT_FILE_NAME, vecStudent);				//保存到文件中
+	CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);				//保存到文件中
 	
 	return false;
 }
@@ -124,6 +144,28 @@ bool zhu::CStudentManager::OnSearchByChar(std::vector<CStudent>& vecStudent, std
 	zhu::CStudentManager::Print(*itFind);
 	//姓名和班级可能相同继续查找
 	return true;
+}
+bool zhu::CStudentManager::OnAddSearchClass(std::vector<zhu::CClass>& vecClass, std::vector<zhu::CClass>::iterator& itFind)
+{
+	//将该学号添加到班级中
+	itFind->m_vecStudentNo.push_back(nTempNo);
+	//保存
+	CFileHelper::SaveHasVector<CClass>(CLASS_FILE_NAME, vecClass);
+	return false;
+}
+bool zhu::CStudentManager::OnDelSearchClass(std::vector<zhu::CClass>& vecClass, std::vector<zhu::CClass>::iterator& itFind)
+{
+	std::vector<int>& vecNo = itFind->m_vecStudentNo;
+	//删除该学号
+	for (std::vector<int>::iterator it = vecNo.begin(); it != vecNo.end(); it++) {
+		if (*it == nTempNo) {
+			//擦除该学号
+			vecNo.erase(it);
+			break;
+		}
+	}
+	CFileHelper::SaveHasVector<CClass>(CLASS_FILE_NAME, vecClass);
+	return false;
 }
 
 //	重写方法
@@ -142,6 +184,7 @@ void zhu::CStudentManager::Add()
 
 	std::cout << "输入学号:";
 	std::cin >> nStudentNo;
+	nTempNo = nStudentNo;
 	if (IManager::Search<CStudent>(nStudentNo, STUDENT_FILE_NAME, CStudent::compareStudentNo, NULL))
 		throw KeyUniqueException("学号");
 	std::cout << "输入姓名:";
@@ -150,7 +193,7 @@ void zhu::CStudentManager::Add()
 	std::cin >> strSex;
 	std::cout << "输入班级:";
 	std::cin >> strClassName;
-	if (!IManager::Search<CClass>(strClassName.c_str(), CLASS_FILE_NAME, CClass::compareClassName, NULL))
+	if (!IManager::Search<CClass>(strClassName.c_str(), CLASS_FILE_NAME, CClass::compareClassName, OnAddSearchClass))
 		throw NotFoundException("班级");
 	std::cout << "输入名族:";
 	std::cin >> strNation;
@@ -176,7 +219,7 @@ void zhu::CStudentManager::Add()
 	CStudent objStudent(nStudentNo, (strSex == "男" ? Sex::MAN : Sex::WOMAN), strClassName.c_str(), strStuentName.c_str(),
 		strNation.c_str(), strNativePlace.c_str(), strEntranceDate.c_str(), strBornDate.c_str(), strAddress.c_str(), strPhone.c_str());	
 	//添加
-	CFileHelper<CStudent>::Append(STUDENT_FILE_NAME, objStudent);
+	CFileHelper::Append<CStudent>(STUDENT_FILE_NAME, objStudent);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CStudentManager::Del()
@@ -269,7 +312,7 @@ void zhu::CStudentManager::SearchByClass()
 }
 void zhu::CStudentManager::SearchAll()
 {
-	std::vector<CStudent>* vector = CFileHelper<CStudent>::ReadAll(STUDENT_FILE_NAME);
+	std::vector<CStudent>* vector = CFileHelper::ReadAll<CStudent>(STUDENT_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

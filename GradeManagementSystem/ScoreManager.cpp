@@ -10,7 +10,7 @@ bool zhu::CScoreManager::Search(int nNo, const char * szClassName,
 	bool bFind = false;
 
 	//读取信息
-	std::vector<CScore>* vector = CFileHelper<CScore>::ReadAll(SCORE_FILE_NAME);
+	std::vector<CScore>* vector = CFileHelper::ReadAll<CScore>(SCORE_FILE_NAME);
 
 	//遍历
 	std::vector<CScore>::iterator it;
@@ -41,7 +41,7 @@ bool zhu::CScoreManager::Search(const char * szStudentName, const char * szClass
 	bool bFind = false;
 
 	//读取信息
-	std::vector<CScore>* vector = CFileHelper<CScore>::ReadAll(SCORE_FILE_NAME);
+	std::vector<CScore>* vector = CFileHelper::ReadAll<CScore>(SCORE_FILE_NAME);
 
 	//遍历
 	std::vector<CScore>::iterator it;
@@ -70,7 +70,7 @@ bool zhu::CScoreManager::OnDelete(std::vector<zhu::CScore>& vecScore,
 	std::vector<zhu::CScore>::iterator& itFind)
 {
 	vecScore.erase(itFind);
-	CFileHelper<CScore>::Save(SCORE_FILE_NAME, vecScore);
+	CFileHelper::Save<CScore>(SCORE_FILE_NAME, vecScore);
 	return false;
 }
 
@@ -113,7 +113,7 @@ bool zhu::CScoreManager::OnUpdate(std::vector<zhu::CScore>& vecScore,
 	strcpy(itFind->m_szCourseName, strCourseName.c_str());
 	itFind->m_fScore = fScore;
 
-	CFileHelper<CScore>::Save(SCORE_FILE_NAME, vecScore);
+	CFileHelper::Save<CScore>(SCORE_FILE_NAME, vecScore);
 	return false;
 }
 
@@ -218,7 +218,7 @@ void zhu::CScoreManager::Add()
 	
 	CScore objScore(nTestSubjectNo, nStudentNo, strStuentName.c_str(),
 		strCourseName.c_str(), strClassName.c_str(), fScore);
-	CFileHelper<CScore>::Append(SCORE_FILE_NAME, objScore);
+	CFileHelper::Append<CScore>(SCORE_FILE_NAME, objScore);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CScoreManager::Del()
@@ -356,7 +356,7 @@ void zhu::CScoreManager::DeleteByNameAndCourseName()
 //	查找
 void zhu::CScoreManager::SearchAll()
 {
-	std::vector<CScore>* vector = CFileHelper<CScore>::ReadAll(SCORE_FILE_NAME);
+	std::vector<CScore>* vector = CFileHelper::ReadAll<CScore>(SCORE_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

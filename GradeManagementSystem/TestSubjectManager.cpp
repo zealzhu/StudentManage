@@ -18,7 +18,7 @@ bool zhu::CTestSubjectManager::OnDelete(std::vector<zhu::CTestSubject>& vecTestS
 	std::vector<zhu::CTestSubject>::iterator& itFind)
 {
 	vecTestSubject.erase(itFind);																	//移除		
-	CFileHelper<T>Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, vecTestSubject);						//保存
+	CFileHelper::Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, vecTestSubject);						//保存
 	return false;
 }
 bool zhu::CTestSubjectManager::OnUpdate(std::vector<zhu::CTestSubject>& vecTestSubject,
@@ -44,7 +44,7 @@ bool zhu::CTestSubjectManager::OnUpdate(std::vector<zhu::CTestSubject>& vecTestS
 	strcpy(itFind->m_szTestSubjectName, strTestSubjectName.c_str());
 	strcpy(itFind->m_szCourseName, strCourseName.c_str());
 
-	CFileHelper<T>Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, vecTestSubject);						//保存
+	CFileHelper::Save<CTestSubject>(TEST_SUBJECT_FILE_NAME, vecTestSubject);						//保存
 
 	return false;
 }
@@ -74,7 +74,7 @@ void zhu::CTestSubjectManager::Add()
 	}
 
 	CTestSubject objTestSubject(nTestSubjectNo, strTestSubjectName.c_str(), strCourseName.c_str());
-	CFileHelper<T>Append<CTestSubject>(TEST_SUBJECT_FILE_NAME, objTestSubject);
+	CFileHelper::Append<CTestSubject>(TEST_SUBJECT_FILE_NAME, objTestSubject);
 	std::cout << "添加成功" << std::endl;
 }
 void zhu::CTestSubjectManager::Del()
@@ -107,7 +107,7 @@ void zhu::CTestSubjectManager::Search()
 		<< std::setw(10) << "考试科目"
 		<< std::endl;
 
-	std::vector<CTestSubject>* vector = CFileHelper<T>ReadAll<CTestSubject>(TEST_SUBJECT_FILE_NAME);
+	std::vector<CTestSubject>* vector = CFileHelper::ReadAll<CTestSubject>(TEST_SUBJECT_FILE_NAME);
 	Print(vector);
 	delete vector;
 }

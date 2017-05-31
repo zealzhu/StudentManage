@@ -80,7 +80,7 @@ namespace zhu
 		CClass();
 		CClass(int nClassNo, const char* szClassName);
 		CClass(int nClassNo, const char* szClassName, std::vector<int> vecStudentNo);
-	private:
+	public:
 		int m_nClassNo;																			//班级号
 		char m_szClassName[15];																	//班级名
 		std::vector<int> m_vecStudentNo;														//学号集合

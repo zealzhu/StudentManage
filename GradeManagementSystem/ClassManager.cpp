@@ -29,6 +29,12 @@ void zhu::CClassManager::Print(std::vector<zhu::CClass>* vector)
 // 回调方法
 bool zhu::CClassManager::OnDelete(std::vector<zhu::CClass>& vecClass, std::vector<zhu::CClass>::iterator& itFind)
 {
+	for (int i = 0; i < itFind->m_vecStudentNo.size(); i++) 
+	{
+		//遍历删除所有学生
+		IManager::Search<CStudent>(itFind->m_vecStudentNo[i], STUDENT_FILE_NAME, 
+			CStudent::compareStudentNo, OnRemoveStudent);
+	}
 	vecClass.erase(itFind);															//移除		
 	CFileHelper::SaveHasVector<CClass>(CLASS_FILE_NAME, vecClass);					//保存
 	return false;
@@ -39,17 +45,20 @@ bool zhu::CClassManager::OnUpdate(std::vector<zhu::CClass>& vecClass, std::vecto
 
 	std::cout << "输入新班级名:";
 	std::cin >> strClassName;
+	CheckInput();
 
-	if (std::cin.fail()) {
-		std::cin.clear(std::istream::goodbit);
-		std::cin.ignore(1024, '\n');
-		system("cls");
-		throw InputException();
-	}
-
-	strcpy(itFind->m_szClassName, strClassName.c_str());
+	SetAndCheckCharParam(itFind->m_szClassName, strClassName.c_str(), sizeof(itFind->m_szClassName));
 	CFileHelper::SaveHasVector<CClass>(CLASS_FILE_NAME, vecClass);					//保存
 
+	return false;
+}
+
+bool zhu::CClassManager::OnRemoveStudent(std::vector<zhu::CStudent>& vecStudent, 
+	std::vector<zhu::CStudent>::iterator& itFind)
+{
+	//删除学生
+	vecStudent.erase(itFind);
+	zhu::CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);
 	return false;
 }
 
@@ -61,17 +70,12 @@ void zhu::CClassManager::Add()
 
 	std::cout << "输入班级号:";
 	std::cin >> nClassNo;
+	CheckInput();
 	if (IManager::Search<CClass>(nClassNo, CLASS_FILE_NAME, CClass::compareClassNo, NULL))
 		throw KeyUniqueException("班级号");
 	std::cout << "输入班级名:";
 	std::cin >> strClassName;
-
-	if (std::cin.fail()) {
-		std::cin.clear(std::istream::goodbit);
-		std::cin.ignore(1024, '\n');
-		system("cls");
-		throw InputException();
-	}
+	SetAndCheckCharParam(NULL, strClassName.c_str(), sizeof(CClass::m_szClassName));
 
 	CClass objClass(nClassNo, strClassName.c_str());
 	CFileHelper::AppendHasVector<CClass>(CLASS_FILE_NAME, objClass);
@@ -79,22 +83,24 @@ void zhu::CClassManager::Add()
 }
 void zhu::CClassManager::Del()
 {
-	int nStudentNo;
+	int nClassNo;
 	std::cout << "输入班级号:";
-	std::cin >> nStudentNo;
+	std::cin >> nClassNo;
+	CheckInput();
 
-	if (IManager::Search<CClass>(nStudentNo, CLASS_FILE_NAME, CClass::compareClassNo, OnDelete))
+	if (IManager::Search<CClass>(nClassNo, CLASS_FILE_NAME, CClass::compareClassNo, OnDelete))
 		std::cout << "删除成功" << std::endl;
 	else
 		std::cout << "删除失败" << std::endl;
 }
 void zhu::CClassManager::Update()
 {
-	int nStudentNo;
+	int nClassNo;
 	std::cout << "输入班级号:";
-	std::cin >> nStudentNo;
+	std::cin >> nClassNo;
+	CheckInput();
 
-	if (IManager::Search<CClass>(nStudentNo, CLASS_FILE_NAME, CClass::compareClassNo, OnUpdate))
+	if (IManager::Search<CClass>(nClassNo, CLASS_FILE_NAME, CClass::compareClassNo, OnUpdate))
 		std::cout << "修改成功" << std::endl;
 	else
 		std::cout << "修改失败" << std::endl;

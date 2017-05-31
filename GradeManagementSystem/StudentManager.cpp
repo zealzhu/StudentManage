@@ -77,60 +77,94 @@ bool zhu::CStudentManager::OnUpdate(std::vector<CStudent>& vecStudent, std::vect
 	std::string strAddress;
 	std::string strPhone;
 
-	std::cout << "输入新姓名:";
-	std::cin >> strStuentName;
-	std::cout << "输入新性别:";
-	std::cin >> strSex;
-	std::cout << "输入新班级:";
-	std::cin >> strClassName;
-	if ((strcmp(itFind->m_szClassName, strClassName.c_str())) != 0)			//判断是否新的班级
-	{
-		if (!IManager::Search<CClass>(strClassName.c_str(),					//是新班级查找该班级并添加学号信息
-			CLASS_FILE_NAME, CClass::compareClassName, OnAddSearchClass))
-		{
-			//没有找到该班级
-			throw NotFoundException("班级");
-		}
-		else 
-		{
-			//并且删除旧班级中的记录
-			IManager::Search<CClass>(itFind->m_szClassName, CLASS_FILE_NAME, 
-				CClass::compareClassName, OnDelSearchClass);
-		}		
-	}
-		
-	std::cout << "输入新名族:";
-	std::cin >> strNation;
-	std::cout << "输入新籍贯:";
-	std::cin >> strNativePlace;
-	std::cout << "输入新入学日期:";
-	std::cin >> strEntranceDate;
-	std::cout << "输入新出生日期:";
-	std::cin >> strBornDate;
-	std::cout << "输入新家庭地址:";
-	std::cin >> strAddress;
-	std::cout << "输入新手机:";
-	std::cin >> strPhone;
+	std::string strUpdateField;
+	std::cout << "输入要修改的项（姓名，性别，班级，民族，籍贯，入学日期，出生日期，家庭地址，手机）:";
+	std::cin >> strUpdateField;
 
-	//检测输入是否有错误
+	if (strUpdateField == "姓名") 
+	{
+		std::cout << "输入新姓名:";
+		std::cin >> strStuentName;
+		SetAndCheckCharParam(itFind->m_szStuentName, strStuentName.c_str(), sizeof(itFind->m_szStuentName));
+	}
+	else if (strUpdateField == "性别")
+	{
+		std::cout << "输入新性别:";
+		std::cin >> strSex;
+		itFind->m_emSex = (strSex == "男") ? Sex::MAN : Sex::WOMAN;
+	}
+	else if (strUpdateField == "班级")
+	{
+		std::cout << "输入新班级:";
+		std::cin >> strClassName;
+		//判断是否新的班级
+		if ((strcmp(itFind->m_szClassName, strClassName.c_str())) != 0)			
+		{
+			//是新班级查找该班级并添加学号信息
+			if (!IManager::Search<CClass>(strClassName.c_str(),					
+				CLASS_FILE_NAME, CClass::compareClassName, OnAddSearchClass))
+			{
+				//没有找到该班级
+				throw NotFoundException("班级");
+			}
+			else
+			{
+				//并且删除旧班级中的记录
+				IManager::Search<CClass>(itFind->m_szClassName, CLASS_FILE_NAME,
+					CClass::compareClassName, OnDelSearchClass);
+			}
+		}
+		SetAndCheckCharParam(itFind->m_szClassName, strClassName.c_str(), sizeof(itFind->m_szClassName));
+	}
+	else if (strUpdateField == "民族")
+	{
+		std::cout << "输入新名族:";
+		std::cin >> strNation;
+		SetAndCheckCharParam(itFind->m_szNation, strNation.c_str(), sizeof(itFind->m_szNation));
+	}
+	else if (strUpdateField == "籍贯")
+	{
+		std::cout << "输入新籍贯:";
+		std::cin >> strNativePlace;
+		SetAndCheckCharParam(itFind->m_szNativePlace, strNativePlace.c_str(), sizeof(itFind->m_szNativePlace));
+	}
+	else if (strUpdateField == "入学日期")
+	{
+		std::cout << "输入新入学日期:";
+		std::cin >> strEntranceDate;
+		SetAndCheckCharParam(itFind->m_szEntranceDate, strEntranceDate.c_str(), sizeof(itFind->m_szEntranceDate));
+	}
+	else if (strUpdateField == "出生日期")
+	{
+		std::cout << "输入新出生日期:";
+		std::cin >> strBornDate;
+		SetAndCheckCharParam(itFind->m_szBornDate, strBornDate.c_str(), sizeof(itFind->m_szBornDate));
+	}
+	else if (strUpdateField == "家庭地址")
+	{
+		std::cout << "输入新家庭地址:";
+		std::cin >> strAddress;
+		SetAndCheckCharParam(itFind->m_szAddress, strAddress.c_str(), sizeof(itFind->m_szAddress));
+	}
+	else if (strUpdateField == "手机")
+	{
+		std::cout << "输入新手机:";
+		std::cin >> strPhone;
+		SetAndCheckCharParam(itFind->m_szPhone, strPhone.c_str(), sizeof(itFind->m_szPhone));
+	}
+	else {
+		throw std::exception("输入错误：无此项");
+	}
+
+	//检测输入流是否有错误
 	if (std::cin.fail()) {
 		std::cin.clear(std::istream::goodbit);
 		std::cin.ignore(1024, '\n');
 		system("cls");
 		throw InputException();
 	}
-
-	strcpy(itFind->m_szStuentName, strStuentName.c_str());
-	itFind->m_emSex = (strSex == "男") ? Sex::MAN : Sex::WOMAN;
-	strcpy(itFind->m_szClassName, strClassName.c_str());
-	strcpy(itFind->m_szNation, strNation.c_str());
-	strcpy(itFind->m_szNativePlace, strNativePlace.c_str());
-	strcpy(itFind->m_szEntranceDate, strEntranceDate.c_str());
-	strcpy(itFind->m_szBornDate, strBornDate.c_str());
-	strcpy(itFind->m_szAddress, strAddress.c_str());
-	strcpy(itFind->m_szPhone, strPhone.c_str());
-
-	CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);				//保存到文件中
+	//保存到文件中
+	CFileHelper::Save(STUDENT_FILE_NAME, vecStudent);				
 	
 	return false;
 }
@@ -171,6 +205,7 @@ bool zhu::CStudentManager::OnDelSearchClass(std::vector<zhu::CClass>& vecClass, 
 //	重写方法
 void zhu::CStudentManager::Add()
 {
+	// 输入
 	int nStudentNo;
 	std::string strSex;
 	std::string strClassName;
@@ -185,35 +220,37 @@ void zhu::CStudentManager::Add()
 	std::cout << "输入学号:";
 	std::cin >> nStudentNo;
 	nTempNo = nStudentNo;
+	CheckInput();
 	if (IManager::Search<CStudent>(nStudentNo, STUDENT_FILE_NAME, CStudent::compareStudentNo, NULL))
 		throw KeyUniqueException("学号");
 	std::cout << "输入姓名:";
 	std::cin >> strStuentName;
+	SetAndCheckCharParam(NULL, strStuentName.c_str(), sizeof(CStudent::m_szStuentName));
 	std::cout << "输入性别:";
 	std::cin >> strSex;
 	std::cout << "输入班级:";
 	std::cin >> strClassName;
+	SetAndCheckCharParam(NULL, strClassName.c_str(), sizeof(CStudent::m_szClassName));
 	if (!IManager::Search<CClass>(strClassName.c_str(), CLASS_FILE_NAME, CClass::compareClassName, OnAddSearchClass))
 		throw NotFoundException("班级");
 	std::cout << "输入名族:";
 	std::cin >> strNation;
+	SetAndCheckCharParam(NULL, strNation.c_str(), sizeof(CStudent::m_szNation));
 	std::cout << "输入籍贯:";
 	std::cin >> strNativePlace;
+	SetAndCheckCharParam(NULL, strNativePlace.c_str(), sizeof(CStudent::m_szNativePlace));
 	std::cout << "输入入学日期:";
 	std::cin >> strEntranceDate;
+	SetAndCheckCharParam(NULL, strEntranceDate.c_str(), sizeof(CStudent::m_szEntranceDate));
 	std::cout << "输入出生日期:";
 	std::cin >> strBornDate;
+	SetAndCheckCharParam(NULL, strBornDate.c_str(), sizeof(CStudent::m_szBornDate));
 	std::cout << "输入家庭地址:";
 	std::cin >> strAddress;
+	SetAndCheckCharParam(NULL, strAddress.c_str(), sizeof(CStudent::m_szAddress));
 	std::cout << "输入手机:";
 	std::cin >> strPhone;
-	
-	if (std::cin.fail()) {
-		std::cin.clear(std::istream::goodbit);
-		std::cin.ignore(1024, '\n');
-		system("cls");
-		throw InputException();
-	}
+	SetAndCheckCharParam(NULL, strPhone.c_str(), sizeof(CStudent::m_szPhone));
 
 	//创建对象
 	CStudent objStudent(nStudentNo, (strSex == "男" ? Sex::MAN : Sex::WOMAN), strClassName.c_str(), strStuentName.c_str(),
@@ -316,5 +353,3 @@ void zhu::CStudentManager::SearchAll()
 	Print(vector);
 	delete vector;
 }
-
-

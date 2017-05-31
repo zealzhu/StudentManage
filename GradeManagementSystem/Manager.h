@@ -14,6 +14,11 @@
 
 namespace zhu
 {
+	//	检测参数是否错误
+	void SetAndCheckCharParam(char* szDestination, const char* szSource, int nSize);
+	//	检测输入流
+	void CheckInput();
+
 	/*
 		函数指针的重命名
 	*/
@@ -65,6 +70,7 @@ namespace zhu
 		static bool Search(const char*, std::string,
 			typename OnSearch<T>::COMPARE_BY_CHAR, typename OnSearch<T>::SEARCH_SUCCESS);	//通过char*查找
 	};
+
 	template<class T>
 	inline bool IManager::Search(int nNo, 
 		std::string strFileName,
@@ -153,7 +159,7 @@ namespace zhu
 		void SearchByName();																		//通过姓名查找
 		void SearchByClass();																		//通过班级查找
 
-	private:
+	public:
 		static bool OnDelete(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);		//删除回调
 		static bool OnUpdate(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);		//更新回调
 		static bool OnSearchByNo(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);	//通过学号查找回调
@@ -179,6 +185,7 @@ namespace zhu
 	private:
 		static bool OnDelete(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);
 		static bool OnUpdate(std::vector<zhu::CClass>&, std::vector<zhu::CClass>::iterator&);
+		static bool OnRemoveStudent(std::vector<zhu::CStudent>&, std::vector<zhu::CStudent>::iterator&);
 	};
 
 	/*
@@ -187,7 +194,7 @@ namespace zhu
 	class CGradeManager : public IManager
 	{
 	public:
-		static void Print(std::vector<zhu::CGrade>* vector);									//打印
+		static void Print(std::vector<zhu::CGrade>* vector);								//打印
 
 	public:
 		void Add();																			//添加
@@ -246,7 +253,7 @@ namespace zhu
 		typedef bool(*COMPARE_BY_INT_AND_CHAR)(int, const char*, CScore&);
 		typedef bool(*COMPARE_BY_CHAR_AND_CHAR)(const char*, const char*, CScore&);
 	public:
-		static void Print(std::vector<zhu::CScore>*);									//打印
+		static void Print(std::vector<zhu::CScore>*);								//打印
 	public:
 		void Add();																	//添加
 		void Del();																	//删除
@@ -255,6 +262,9 @@ namespace zhu
 
 	public:
 		void Statistics();															//统计信息
+		void StatisticsClass();
+		void StatisticsCourse();
+		void StatisticsClassTopThree();
 
 	private:
 		void UpdateByNoAndCourseName();												//通过学号和课程名删除
@@ -284,7 +294,6 @@ namespace zhu
 		static bool OnSearchByNameAndCourseName(std::vector<zhu::CScore>&,
 			std::vector<zhu::CScore>::iterator&);									//通过char查找回调
 	};
-	
 }
 
 #endif // !_ZHU_MANAGER_H
